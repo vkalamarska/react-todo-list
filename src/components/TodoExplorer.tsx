@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styled, { css } from "styled-components";
 import DoneIcon from "../assets/done-icon.svg";
+import DeleteIcon from "../assets/delete-icon.svg";
 
 const TodoContainer = styled.div`
   width: 40%;
@@ -12,6 +13,7 @@ const TodoContainer = styled.div`
 `;
 
 const InputContainer = styled.input`
+  margin: 0 0 5px 0;
   padding: 16px 0 16px 60px;
   border: none;
   background: white;
@@ -36,15 +38,43 @@ const InputContainer = styled.input`
 //   cursor: pointer;
 // `;
 
-const Label = styled.label`
-  margin: 5px 0;
-  padding: 16px 0 16px 16px;
+const List = styled.li`
+  list-style: none;
+  overflow: hidden;
+  width: 100%;
+  margin-bottom: 5px;
+`;
+
+const LabelContainer = styled.div`
   display: flex;
+  justify-content: space-between;
   justify-items: center;
+  padding: 16px;
+  background-color: white;
+  box-shadow: inset 0 -2px 1px rgba(0, 0, 0, 0.03);
+`;
+
+const DeleteButton = styled.button`
+  padding: 8px;
+  border: none;
+  background-image: url(${DeleteIcon});
+  background-color: white;
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+
+  :hover {
+    fill: "papayawhip";
+  }
+`;
+
+const Label = styled.label`
+  display: flex;
+
   gap: 25px;
   border: none;
   background: white;
-  box-shadow: inset 0 -2px 1px rgba(0, 0, 0, 0.03);
 `;
 
 const HiddenCheckbox = styled.input.attrs({ type: "checkbox" })`
@@ -99,7 +129,11 @@ const LabelText = styled.span<{ isChecked: boolean }>`
       : ""}
 `;
 
-const Checkbox = () => {
+interface CheckboxProps {
+  labelText: string;
+}
+
+const Checkbox: React.FC<CheckboxProps> = ({ labelText }) => {
   const [isChecked, setChecked] = useState(false);
 
   return (
@@ -114,18 +148,30 @@ const Checkbox = () => {
           <polyline points="20 6 9 17 4 12" />
         </Icon>
       </CheckboxContainer>
-      <LabelText isChecked={isChecked}>Cleaning</LabelText>
+      <LabelText isChecked={isChecked}>{labelText}</LabelText>
     </>
   );
 };
 
 const TodoExplorer = () => {
+  const [labelText, setLabelText] = useState("");
+  const [todoList, setTodoList] = useState([]);
+
   return (
     <TodoContainer>
-      <InputContainer placeholder="What needs to be done?"></InputContainer>
-      <Label>
-        <Checkbox></Checkbox>
-      </Label>
+      <InputContainer
+        placeholder="What needs to be done?"
+        value={labelText}
+        onChange={(e) => setLabelText(e.target.value)}
+      ></InputContainer>
+      <List>
+        <LabelContainer>
+          <Label>
+            <Checkbox labelText={labelText}></Checkbox>
+          </Label>
+          <DeleteButton></DeleteButton>
+        </LabelContainer>
+      </List>
     </TodoContainer>
   );
 };
