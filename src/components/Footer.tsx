@@ -71,12 +71,22 @@ const ClearCompleted = styled.button`
 `;
 
 interface FooterProps {
+  item: TodoItem;
   todoItems: TodoItem[];
   filter: FilterType;
   setFilter: (val: FilterType) => void;
+  setTodoItems: (val: TodoItem) => void;
+  handleDelete: (index: number) => void;
 }
 
-const Footer: React.FC<FooterProps> = ({ todoItems, filter, setFilter }) => {
+const Footer: React.FC<FooterProps> = ({
+  item,
+  todoItems,
+  filter,
+  setFilter,
+  setTodoItems,
+  handleDelete,
+}) => {
   return (
     <FooterContainer>
       <ItemLeft>2 items left</ItemLeft>

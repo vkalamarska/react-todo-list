@@ -173,7 +173,9 @@ const TodoExplorer = () => {
             </LabelContainer>
           ))}
       </List>
-      <Footer filter={filter} setFilter={setFilter}></Footer>
+      {todoItems.length > 0 && (
+        <Footer filter={filter} setFilter={setFilter}></Footer>
+      )}
     </TodoContainer>
   );
 };
