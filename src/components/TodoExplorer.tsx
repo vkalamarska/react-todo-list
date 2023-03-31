@@ -85,6 +85,8 @@ export interface TodoItem {
   isChecked: boolean;
 }
 
+export type FilterType = "all" | "checked" | "unchecked";
+
 const getUniqueId = (todoItems: TodoItem[]): number => {
   if (!todoItems.length) return 0;
   const highestId = todoItems.map((item) => item.id).sort((a, b) => b - a)[0];
@@ -95,6 +97,8 @@ const TodoExplorer = () => {
   const [inputText, setInputText] = useState("");
 
   const [todoItems, setTodoItems] = useState<TodoItem[]>([]);
+
+  const [filter, setFilter] = useState<FilterType>("all");
 
   const handleEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
@@ -118,8 +122,30 @@ const TodoExplorer = () => {
   };
 
   const handleDoneButton = (isChecked: boolean) => {
-    const allChecked = todoItems.map((item) => ({ ...item, isChecked: true }));
+    const allChecked = todoItems.map((item) => ({
+      ...item,
+      isChecked: true,
+    }));
     setTodoItems(allChecked);
+    if (todoItems.every((items) => items.isChecked === true)) {
+      const allUnchecked = todoItems.map((item) => ({
+        ...item,
+        isChecked: false,
+      }));
+      setTodoItems(allUnchecked);
+    }
+  };
+
+  const filterItems = (item: TodoItem): boolean => {
+    if (filter === "checked") {
+      return item.isChecked;
+    }
+
+    if (filter === "unchecked") {
+      return !item.isChecked;
+    }
+
+    return true;
   };
 
   return (
@@ -135,6 +161,7 @@ const TodoExplorer = () => {
       </InputWrapper>
       <List>
         {todoItems
+          .filter(filterItems)
           .sort((a, b) => a.id - b.id)
           .map((item, i) => (
             <LabelContainer>
@@ -146,7 +173,7 @@ const TodoExplorer = () => {
             </LabelContainer>
           ))}
       </List>
-      {/* <Footer></Footer> */}
+      <Footer filter={filter} setFilter={setFilter}></Footer>
     </TodoContainer>
   );
 };

@@ -1,5 +1,6 @@
 import styled, { css } from "styled-components";
 import { useState } from "react";
+import { FilterType, TodoItem } from "./TodoExplorer";
 
 const FooterContainer = styled.div`
   margin: 0 0 3px 0;
@@ -70,24 +71,19 @@ const ClearCompleted = styled.button`
 `;
 
 interface FooterProps {
-  labelText: string;
-  todoItems: string[];
-  isChecked: boolean;
+  todoItems: TodoItem[];
+  filter: FilterType;
+  setFilter: (val: FilterType) => void;
 }
 
-const Footer: React.FC<FooterProps> = ({ labelText, todoItems, isChecked }) => {
-  const handleComletedItems = () => {
-    // const completedItems = todoItems.filter((item, i) => i>0,  === isChecked )
-    // setTodoItems(completedItems);
-  };
-
+const Footer: React.FC<FooterProps> = ({ todoItems, filter, setFilter }) => {
   return (
     <FooterContainer>
       <ItemLeft>2 items left</ItemLeft>
       <StatusContainer>
-        <AllItems>All</AllItems>
-        <ActiveItems labelText={labelText}>Active</ActiveItems>
-        <CompletedItems labelText={labelText} onClick={}>
+        <AllItems onClick={() => setFilter("all")}>All</AllItems>
+        <ActiveItems onClick={() => setFilter("unchecked")}>Active</ActiveItems>
+        <CompletedItems onClick={() => setFilter("checked")}>
           Completed
         </CompletedItems>
       </StatusContainer>
