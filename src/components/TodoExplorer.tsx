@@ -15,7 +15,7 @@ const TodoContainer = styled.div`
 `;
 
 const InputWrapper = styled.div`
-  margin: 0 0 5px 0;
+  margin: 0 0 3px 0;
   padding: 16px 16px 16px 20px;
   gap: 25px;
   display: flex;
@@ -52,10 +52,10 @@ const List = styled.li`
   list-style: none;
   overflow: hidden;
   width: 100%;
-  margin-bottom: 5px;
 `;
 
 const LabelContainer = styled.div`
+  margin-bottom: 3px;
   display: flex;
   justify-content: space-between;
   justify-items: center;
@@ -110,8 +110,13 @@ const TodoExplorer = () => {
     }
   };
 
-  const handleDelete = (index: number) => {
-    const newTodoItems = todoItems.filter((item, i) => i !== index);
+  const handleDelete = (id: number) => {
+    const newTodoItems = todoItems.filter((item) => item.id !== id);
+    setTodoItems(newTodoItems);
+  };
+
+  const deleteMultiple = (ides: number[]) => {
+    const newTodoItems = todoItems.filter((item) => !ides.includes(item.id));
     setTodoItems(newTodoItems);
   };
 
@@ -121,7 +126,7 @@ const TodoExplorer = () => {
     setTodoItems([...allOtherItems, { ...updatedItem, isChecked: value }]);
   };
 
-  const handleDoneButton = (isChecked: boolean) => {
+  const handleDoneButton = () => {
     const allChecked = todoItems.map((item) => ({
       ...item,
       isChecked: true,
@@ -151,7 +156,9 @@ const TodoExplorer = () => {
   return (
     <TodoContainer>
       <InputWrapper>
-        <DoneButton onClick={() => handleDoneButton()}></DoneButton>
+        {todoItems.length > 0 && (
+          <DoneButton onClick={() => handleDoneButton()}></DoneButton>
+        )}
         <InputContainer
           placeholder="What needs to be done?"
           value={inputText}
@@ -169,12 +176,20 @@ const TodoExplorer = () => {
                 item={item}
                 setChecked={(val) => handleCheck(item.id, val)}
               ></Checkbox>
-              <DeleteButton onClick={() => handleDelete(i)}></DeleteButton>
+              {
+                <DeleteButton
+                  onClick={() => handleDelete(item.id)}
+                ></DeleteButton>
+              }
             </LabelContainer>
           ))}
       </List>
       {todoItems.length > 0 && (
-        <Footer filter={filter} setFilter={setFilter}></Footer>
+        <Footer
+          setFilter={setFilter}
+          todoItems={todoItems}
+          deleteMultiple={deleteMultiple}
+        ></Footer>
       )}
     </TodoContainer>
   );

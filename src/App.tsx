@@ -3,7 +3,8 @@ import TodoExplorer from "./components/TodoExplorer";
 
 const AppWrapper = styled.section`
   width: 100%;
-  height: 100%;
+  min-height: 100%;
+  padding: 0 0 50px 0;
   background-color: #f5f5f5;
 `;
 

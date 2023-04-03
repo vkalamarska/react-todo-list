@@ -3,13 +3,11 @@ import { useState } from "react";
 import { FilterType, TodoItem } from "./TodoExplorer";
 
 const FooterContainer = styled.div`
-  margin: 0 0 3px 0;
   padding: 10px 15px;
   height: 20px;
   display: flex;
   justify-content: space-between;
   text-align: center;
-  border-top: 1px solid #e6e6e6;
   color: #777;
   font-size: 14px;
   background-color: white;
@@ -33,6 +31,10 @@ const AllItems = styled.button`
   :hover {
     border: 1px solid rgba(175, 47, 47, 0.298);
   }
+
+  :active {
+    background-color: rgba(175, 47, 47, 0.15);
+  }
 `;
 
 const ActiveItems = styled.button`
@@ -45,6 +47,10 @@ const ActiveItems = styled.button`
   :hover {
     border: 1px solid rgba(175, 47, 47, 0.298);
   }
+
+  :active {
+    background-color: rgba(175, 47, 47, 0.15);
+  }
 `;
 
 const CompletedItems = styled.button`
@@ -56,6 +62,10 @@ const CompletedItems = styled.button`
 
   :hover {
     border: 1px solid rgba(175, 47, 47, 0.298);
+  }
+
+  :active {
+    background-color: rgba(175, 47, 47, 0.15);
   }
 `;
 
@@ -71,25 +81,34 @@ const ClearCompleted = styled.button`
 `;
 
 interface FooterProps {
-  item: TodoItem;
   todoItems: TodoItem[];
-  filter: FilterType;
   setFilter: (val: FilterType) => void;
-  setTodoItems: (val: TodoItem) => void;
-  handleDelete: (index: number) => void;
+  deleteMultiple: (ides: number[]) => void;
 }
 
 const Footer: React.FC<FooterProps> = ({
-  item,
   todoItems,
-  filter,
   setFilter,
-  setTodoItems,
-  handleDelete,
+  deleteMultiple,
 }) => {
+  const handleDeleteCompleted = () => {
+    const allCheckedItems = todoItems.filter((item) => item.isChecked === true);
+    deleteMultiple(allCheckedItems.map((i) => i.id));
+  };
+
+  const itemLeftStatus = () => {
+    const arrayLength = todoItems.filter(
+      (item) => item.isChecked === false
+    ).length;
+
+    const itemsWord = arrayLength === 1 ? "item" : "items";
+
+    return `${arrayLength} ${itemsWord} left`;
+  };
+
   return (
     <FooterContainer>
-      <ItemLeft>2 items left</ItemLeft>
+      <ItemLeft>{itemLeftStatus()}</ItemLeft>
       <StatusContainer>
         <AllItems onClick={() => setFilter("all")}>All</AllItems>
         <ActiveItems onClick={() => setFilter("unchecked")}>Active</ActiveItems>
@@ -97,7 +116,9 @@ const Footer: React.FC<FooterProps> = ({
           Completed
         </CompletedItems>
       </StatusContainer>
-      <ClearCompleted>Clear Completed</ClearCompleted>
+      <ClearCompleted onClick={() => handleDeleteCompleted()}>
+        Clear Completed
+      </ClearCompleted>
     </FooterContainer>
   );
 };

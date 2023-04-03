@@ -4,6 +4,7 @@ import { TodoItem } from "./TodoExplorer";
 
 const Label = styled.label`
   display: flex;
+  align-items: center;
   gap: 25px;
   border: none;
   background: white;
@@ -11,7 +12,7 @@ const Label = styled.label`
 
 const HiddenCheckbox = styled.input.attrs({ type: "checkbox" })`
   height: 0;
-  margin: -1px;
+  margin: 0px;
   overflow: hidden;
   padding: 0;
   position: absolute;
@@ -20,17 +21,12 @@ const HiddenCheckbox = styled.input.attrs({ type: "checkbox" })`
 `;
 
 const Icon = styled.svg`
-  height: 6px;
-  left: 7px;
-  opacity: 0;
-  position: absolute;
-  top: 8px;
-  transform: rotate(-45deg);
-  width: 12px;
+  fill: none;
+  stroke: white;
+  stroke-width: 2px;
 `;
 
 const StyledCheckbox = styled.div<{ checked: boolean }>`
-  display: inline-block;
   margin: 0;
   width: 26px;
   height: 26px;
@@ -74,10 +70,11 @@ const Checkbox: React.FC<CheckboxProps> = ({ item, setChecked }) => {
           checked={item.isChecked}
           onChange={(event) => setChecked(event.target.checked)}
         />
-        <StyledCheckbox checked={item.isChecked} />
-        <Icon viewBox="0 0 24 24">
-          <polyline points="20 6 9 17 4 12" />
-        </Icon>
+        <StyledCheckbox checked={item.isChecked}>
+          <Icon viewBox="0 0 24 24">
+            <polyline points="20 6 9 17 4 12" />
+          </Icon>
+        </StyledCheckbox>
       </CheckboxContainer>
       <LabelText isChecked={item.isChecked}>{item.label}</LabelText>
     </Label>
