@@ -5,13 +5,19 @@ import DeleteIcon from "../assets/delete-icon.svg";
 import Checkbox from "./Checkbox";
 import Footer from "./Footer";
 
-const TodoContainer = styled.div`
+const TodoContainer = styled.div<{ isDarkMode: boolean }>`
   width: 40%;
   margin: 30px auto;
   display: flex;
   justify-content: center;
   flex-flow: column;
   box-shadow: 0px 17px 85px 14px rgba(197, 197, 197, 0.62);
+
+  ${(p) =>
+    p.isDarkMode &&
+    `
+    box-shadow: 0px 17px 85px 14px rgba(118, 118, 118, 0.62);
+    `}
 `;
 
 const InputWrapper = styled.div`
@@ -93,7 +99,11 @@ const getUniqueId = (todoItems: TodoItem[]): number => {
   return highestId + 1;
 };
 
-const TodoExplorer = () => {
+interface IProps {
+  isDarkMode: boolean;
+}
+
+const TodoExplorer = ({ isDarkMode }) => {
   const [inputText, setInputText] = useState("");
 
   const [todoItems, setTodoItems] = useState<TodoItem[]>([]);
@@ -154,7 +164,7 @@ const TodoExplorer = () => {
   };
 
   return (
-    <TodoContainer>
+    <TodoContainer isDarkMode={isDarkMode}>
       <InputWrapper>
         {todoItems.length > 0 && (
           <DoneButton onClick={() => handleDoneButton()}></DoneButton>
