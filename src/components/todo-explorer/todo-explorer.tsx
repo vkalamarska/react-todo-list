@@ -1,89 +1,15 @@
-import { useState } from "react";
-import styled, { css } from "styled-components";
-import DoneIcon from "../assets/done-icon.svg";
-import DeleteIcon from "../assets/delete-icon.svg";
-import Checkbox from "./Checkbox";
-import Footer from "./Footer";
-
-const TodoContainer = styled.div<{ isDarkMode: boolean }>`
-  width: 40%;
-  margin: 30px auto;
-  display: flex;
-  justify-content: center;
-  flex-flow: column;
-  box-shadow: 0px 17px 85px 14px rgba(197, 197, 197, 0.62);
-
-  ${(p) =>
-    p.isDarkMode &&
-    `
-    box-shadow: 0px 17px 85px 14px rgba(118, 118, 118, 0.62);
-    `}
-`;
-
-const InputWrapper = styled.div`
-  margin: 0 0 3px 0;
-  padding: 16px 16px 16px 20px;
-  gap: 25px;
-  display: flex;
-  justify-items: center;
-  background-color: white;
-  box-shadow: inset 0 -2px 1px rgba(0, 0, 0, 0.03);
-`;
-
-const InputContainer = styled.input`
-  padding: 0;
-  border: none;
-  font-size: 24px;
-
-  ::placeholder {
-    color: rgba(197, 197, 197, 0.62);
-  }
-  :focus {
-    outline: none;
-  }
-`;
-
-const DoneButton = styled.button`
-  padding: 0 9px;
-  border: none;
-  background-image: url(${DoneIcon});
-  background-color: white;
-  background-size: 100%;
-  background-repeat: no-repeat;
-  background-position: center;
-  cursor: pointer;
-`;
-
-const List = styled.li`
-  list-style: none;
-  overflow: hidden;
-  width: 100%;
-`;
-
-const LabelContainer = styled.div`
-  margin-bottom: 3px;
-  display: flex;
-  justify-content: space-between;
-  justify-items: center;
-  padding: 16px;
-  background-color: white;
-  box-shadow: inset 0 -2px 1px rgba(0, 0, 0, 0.03);
-`;
-
-const DeleteButton = styled.button`
-  padding: 8px;
-  border: none;
-  background-image: url(${DeleteIcon});
-  background-color: white;
-  background-size: 100%;
-  background-repeat: no-repeat;
-  background-position: center;
-  cursor: pointer;
-
-  :hover {
-    fill: "papayawhip";
-  }
-`;
+import { useEffect, useState } from "react";
+import Checkbox from "../checkbox/checkbox";
+import Footer from "../footer/footer";
+import {
+  TodoContainer,
+  InputWrapper,
+  DoneButton,
+  InputContainer,
+  List,
+  LabelContainer,
+  DeleteButton,
+} from "./todo-explorer.styles";
 
 export interface TodoItem {
   id: number;
@@ -93,28 +19,35 @@ export interface TodoItem {
 
 export type FilterType = "all" | "checked" | "unchecked";
 
-const getUniqueId = (todoItems: TodoItem[]): number => {
-  if (!todoItems.length) return 0;
-  const highestId = todoItems.map((item) => item.id).sort((a, b) => b - a)[0];
-  return highestId + 1;
+const getTodosFromStorage = (): TodoItem[] => {
+  const storageData = localStorage.getItem("todo-items");
+  if (!storageData) return [];
+
+  return JSON.parse(storageData) || [];
 };
 
 interface IProps {
   isDarkMode: boolean;
 }
 
-const TodoExplorer = ({ isDarkMode }) => {
+const TodoExplorer = ({ isDarkMode }: IProps) => {
   const [inputText, setInputText] = useState("");
 
-  const [todoItems, setTodoItems] = useState<TodoItem[]>([]);
+  const storageTodoItems = getTodosFromStorage();
+
+  const [todoItems, setTodoItems] = useState<TodoItem[]>(storageTodoItems);
 
   const [filter, setFilter] = useState<FilterType>("all");
+
+  useEffect(() => {
+    localStorage.setItem("todo-items", JSON.stringify(todoItems));
+  }, [todoItems]);
 
   const handleEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       setTodoItems([
         ...todoItems,
-        { id: getUniqueId(todoItems), label: inputText, isChecked: false },
+        { id: new Date().getTime(), label: inputText, isChecked: false },
       ]);
       setInputText("");
     }

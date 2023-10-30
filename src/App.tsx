@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import TodoExplorer from "./components/TodoExplorer";
+import TodoExplorer from "./components/todo-explorer/todo-explorer";
 import { DarkModeSwitch } from "react-toggle-dark-mode";
 import { useState } from "react";
 
@@ -18,14 +18,15 @@ const AppWrapper = styled.section<{ isDarkMode: boolean }>`
 
 const HeaderContainer = styled.div`
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
 `;
 
 const Header = styled.div<{ isDarkMode: boolean }>`
-  margin: 0 auto;
+  grid-column: 2/3;
   font-size: 100px;
+  display: flex;
+  justify-content: center;
   color: rgba(175, 47, 47, 0.15);
 
   ${(p) =>
@@ -33,6 +34,14 @@ const Header = styled.div<{ isDarkMode: boolean }>`
     `
      color: #d3d3d3;
     `}
+`;
+
+const SwitchContainer = styled.div`
+  grid-column: 3/3;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 50px;
 `;
 
 function App() {
@@ -46,8 +55,7 @@ function App() {
       <HeaderContainer>
         <div />
         <Header isDarkMode={isDarkMode}>todos</Header>
-        <div>
-          {" "}
+        <SwitchContainer>
           <DarkModeSwitch
             checked={!isDarkMode}
             onChange={toggleDarkMode}
@@ -55,7 +63,7 @@ function App() {
             moonColor="rgba(175, 47, 47, 0.15)"
             sunColor="#d3d3d3"
           />
-        </div>
+        </SwitchContainer>
       </HeaderContainer>
       <TodoExplorer isDarkMode={isDarkMode}></TodoExplorer>
     </AppWrapper>
